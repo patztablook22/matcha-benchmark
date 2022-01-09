@@ -1,0 +1,60 @@
+#!/usr/bin/env python3
+
+import datetime
+import os
+
+debug = False
+
+def seconds(command, sizeCoef, timeCoef):
+    debugFlag = 1 if debug else 0
+
+    start = datetime.datetime.now()
+    os.system(str(command) + f' {sizeCoef} {timeCoef} {debugFlag}')
+    stop = datetime.datetime.now()
+    delta = (stop - start).total_seconds()
+    return delta
+
+matcha = '/home/patz/Heap/matcha-core/build/main'
+numpy  = 'python3 /home/patz/Heap/mtest/numpy_ndarray_benchmark.py'
+
+
+firstUnit = True
+
+def unit(sizeCoef, timeCoef):
+    global firstUnit
+    if firstUnit:
+        firstUnit = False
+        print('=' * 52)
+
+    m = seconds(matcha, sizeCoef, timeCoef)
+    n = seconds(numpy , sizeCoef, timeCoef)
+
+    if debug: 
+        print('=' * 52)
+        return
+
+    sc = str(sizeCoef).ljust(10)
+    tc = str(timeCoef).ljust(10)
+
+    print('sizeCoef: {} |   Matcha: {:.3f} s'.format(sc, m))
+    print('timeCoef: {} |   Numpy:  {:.3f} s'.format(tc, n))
+    print('=' * 52)
+
+
+def size(sizeCoef):
+    global defaultTimeCoef
+    unit(sizeCoef, defaultTimeCoef)
+
+def time(timeCoef):
+    global defaultSizeCoef
+    unit(defaultSizeCoef, timeCoef)
+
+defaultSizeCoef = 1
+defaultTimeCoef = .5
+
+size(500)
+size(50)
+time(3)
+
+
+
